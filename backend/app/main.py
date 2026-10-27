@@ -7,6 +7,8 @@ from fastapi import FastAPI
 from app.adapters.api.notes_routes import create_notes_router
 from app.adapters.db.postgres_note_repository import PostgresNoteRepository
 
+from app.adapters.llm.openai_embedder import OpenAIEmbedder
+
 load_dotenv()
 
 repo = PostgresNoteRepository(os.environ["DATABASE_URL"])
@@ -18,4 +20,5 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
-app.include_router(create_notes_router(repo))
+embedder = OpenAIEmbedder(os.environ["OPENAI_API_KEY"])
+app.include_router(create_notes_router(repo, embedder))

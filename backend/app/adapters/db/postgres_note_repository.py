@@ -20,3 +20,23 @@ class PostgresNoteRepository:
             ).fetchone()
         note.id, note.created_at = row
         return note
+
+    def save_chunks(self, note_id, chunks, embeddings):
+        with psycopg.connect(self.conninfo) as conn:
+            for i, (chunk, vector) in enumerate(zip(chunks, embeddings)):
+                conn.execute(
+                    """
+                    INSERT INTO note_chunks (note_id, chunk_index, content, embedding)
+                    VALUES (%s, %s, %s, %s::vector)
+                    ON CONFLICT (note_id, chunk_index)
+                    DO UPDATE SET content = EXCLUDED.content, embedding = EXCLUDED.embedding
+                    """,
+                    (note_id, i, chunk, str(vector)),
+                )
+
+    def set_embedding_status(self, note_id, status):
+        with psycopg.connect(self.conninfo) as conn:
+            conn.execute(
+                "UPDATE notes SET embedding_status = %s WHERE id = %s",
+                (status, note_id),
+            )
