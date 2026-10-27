@@ -4,3 +4,6 @@ psycopg[binary]
 pgvector
 python-dotenv
 pytest
+openai
+openai
+openai
