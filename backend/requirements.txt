@@ -3,7 +3,6 @@ uvicorn
 psycopg[binary]
 pgvector
 python-dotenv
+openai
 pytest
-openai
-openai
-openai
+httpx

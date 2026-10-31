@@ -1,15 +1,6 @@
-from app.domain.notes import Note, Category, Shift
+from app.domain.notes import Category, Note, Shift
 from app.services.add_note import add_note
-
-
-class FakeNoteRepository:
-    def __init__(self):
-        self.notes = []
-
-    def save(self, note):
-        note.id = len(self.notes) + 1
-        self.notes.append(note)
-        return note
+from tests.fakes import FakeNoteRepository
 
 
 def test_add_note_saves_and_assigns_id():
